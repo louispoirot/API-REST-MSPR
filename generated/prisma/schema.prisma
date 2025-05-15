@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model calendar {
+  id         Int      @id @default(autoincrement())
+  date_value DateTime @unique(map: "date_value") @db.Date
+  data       data[]
+}
+
+model data {
+  id           Int      @id @default(0)
+  total_cases  Int
+  total_deaths Int
+  new_cases    Int
+  new_deaths   Int
+  id_location  Int
+  id_pandemie  Int
+  id_calendar  Int
+  calendar     calendar @relation(fields: [id_calendar], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "id_calendar")
+  location     location @relation(fields: [id_location], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "id_location")
+  pandemie     pandemie @relation(fields: [id_pandemie], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "id_pandemie")
+
+  @@index([id_calendar], map: "id_calendar")
+  @@index([id_location], map: "id_location")
+  @@index([id_pandemie], map: "id_pandemie")
+}
+
+model location {
+  id        Int      @id @default(autoincrement())
+  country   String   @unique(map: "country") @db.VarChar(255)
+  continent String?  @db.VarChar(255)
+  latitude  Decimal? @db.Decimal(15, 6)
+  longitude Decimal? @db.Decimal(15, 6)
+  data      data[]
+}
+
+model pandemie {
+  id   Int     @id @default(autoincrement())
+  type String? @unique(map: "type") @db.VarChar(255)
+  data data[]
+}
