@@ -13,9 +13,12 @@ export class DataController {
         return this.dataService.create(createDataDto);
     }
 
+    @ApiQuery({ name: 'id_calendar', required: false, type: Number })
+    @ApiQuery({ name: 'id_location', required: false, type: Number })
+    @ApiQuery({ name: 'id_pandemie', required: false, type: Number })
     @Get()
-    findAll() {
-        return this.dataService.findAll();
+    findAll(@Query() filters?: FilterDataDto) {
+        return this.dataService.findByFilters(filters);
     }
 
     @Get(':id')
@@ -37,31 +40,6 @@ export class DataController {
     findLocation(@Param('id', ParseIntPipe) id: number) {
         return this.dataService.findByLocationId(id);
     }
-
-    @ApiQuery({ name: 'id_calendar', required: false, type: Number })
-    @ApiQuery({ name: 'id_location', required: false, type: Number })
-    @ApiQuery({ name: 'id_pandemie', required: false, type: Number })
-    @Get('filter')
-    findFilter(
-        @Query(new ValidationPipe({ transform: true })) filters: FilterDataDto
-    ) {
-        console.log('Filters reçus => ', filters);
-        return this.dataService.findByFilters(filters);
-    }
-
-    @Get('debug')
-    debugFilter(
-        @Query('id_calendar') id_calendar?: string,
-        @Query('id_location') id_location?: string,
-        @Query('id_pandemie') id_pandemie?: string,
-    ) {
-        return {
-            id_calendar: Number(id_calendar),
-            id_location: Number(id_location),
-            id_pandemie: Number(id_pandemie),
-        };
-    }
-
 
     @Patch(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() updateDataDto: CreateDataDto) {

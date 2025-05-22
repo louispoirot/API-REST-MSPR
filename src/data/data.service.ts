@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateDataDto } from './dto/create-data.dto';
 import { UpdateDataDto } from './dto/update-data.dto';
+import { Prisma } from '@prisma/client';
+import { FilterDataDto } from './dto/filter-data.dto';
 
 @Injectable()
 export class DataService {
@@ -11,10 +13,6 @@ export class DataService {
         return this.databaseService.data.create({
             data: createDataDto
         });
-    }
-
-    async findAll() {
-        return this.databaseService.data.findMany();
     }
 
     async findOne(id: number) {
@@ -66,18 +64,24 @@ export class DataService {
         });
     }
 
-    async findByFilters(filters: {
-        id_calendar?: number;
-        id_location?: number;
-        id_pandemie?: number;
-    }) {
-        return this.databaseService.data.findMany({
-            where: {
-                ...(filters.id_calendar !== undefined && { id_calendar: filters.id_calendar }),
-                ...(filters.id_location !== undefined && { id_location: filters.id_location }),
-                ...(filters.id_pandemie !== undefined && { id_pandemie: filters.id_pandemie }),
-            },
-        });
+    async findByFilters(filters?: FilterDataDto) {
+        const query: Prisma.dataFindManyArgs = {
+            where: {}
+        };
+
+        if (filters?.id_calendar) {
+            query.where!.id_calendar = filters!.id_calendar;
+        }
+
+        if (filters?.id_location) {
+            query.where!.id_location = filters!.id_location;
+        }
+
+        if (filters?.id_pandemie) {
+            query.where!.id_pandemie = filters!.id_pandemie;
+        }
+
+        return this.databaseService.data.findMany(query);
     }
 
 }
