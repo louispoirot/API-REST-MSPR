@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsDateString, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsString, IsOptional, IsNumber } from 'class-validator';
 import { Decimal } from 'generated/prisma/runtime/library';
 
 export class CreateLocationDto {
@@ -25,14 +25,14 @@ export class CreateLocationDto {
         example: '15.64789',
     })
     @IsOptional()
-    @Type(() => Number)
-    latitude: Decimal;
+    @IsNumber()
+    latitude: number;
 
     @ApiProperty({
         description: 'Longitude du pays',
         example: '15.64789',
     })
     @IsOptional()
-    @Type(() => Number)
-    Longitude: Decimal;
+    @IsNumber()
+    Longitude: number;
 }
