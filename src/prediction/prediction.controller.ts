@@ -30,24 +30,6 @@ export class PredictionController {
         return this.predictionService.findOne(id);
     }
 
-    @ApiOperation({ summary: 'Lister les données associées à une date précise (id_calendar)' })
-    @Get('calendar/:id')
-    findCalendar(@Param('id', ParseIntPipe) id: number) {
-        return this.predictionService.findByCalendarId(id);
-    }
-
-    @ApiOperation({ summary: 'Lister les données associées à une pandémie précise (id_pandemie)' })
-    @Get('pandemie/:id')
-    findPandemie(@Param('id', ParseIntPipe) id: number) {
-        return this.predictionService.findByPandemieId(id);
-    }
-
-    @ApiOperation({ summary: 'Lister les données associées à une localisation précise (id_location)' })
-    @Get('location/:id')
-    findLocation(@Param('id', ParseIntPipe) id: number) {
-        return this.predictionService.findByLocationId(id);
-    }
-
     @ApiOperation({ summary: 'Mettre à jour une donnée existante' })
     @Patch(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() updatePredictionDto: UpdatePredictionDto) {

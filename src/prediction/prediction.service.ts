@@ -40,30 +40,6 @@ export class PredictionService {
         });
     }
 
-    async findByCalendarId(id_calendar: number) {
-        return this.databaseService.prediction.findMany({
-            where: {
-                id_calendar,
-            }
-        });
-    }
-
-    async findByLocationId(id_location: number) {
-        return this.databaseService.prediction.findMany({
-            where: {
-                id_location,
-            }
-        });
-    }
-
-    async findByPandemieId(id_pandemie: number) {
-        return this.databaseService.prediction.findMany({
-            where: {
-                id_pandemie,
-            }
-        });
-    }
-
     async findByFilters(filters?: FilterPredictionDto) {
         const query: Prisma.predictionFindManyArgs = {
             where: {}

@@ -30,24 +30,6 @@ export class DataController {
         return this.dataService.findOne(id);
     }
 
-    @ApiOperation({ summary: 'Lister les données associées à une date précise (id_calendar)' })
-    @Get('calendar/:id')
-    findCalendar(@Param('id', ParseIntPipe) id: number) {
-        return this.dataService.findByCalendarId(id);
-    }
-
-    @ApiOperation({ summary: 'Lister les données associées à une pandémie précise (id_pandemie)' })
-    @Get('pandemie/:id')
-    findPandemie(@Param('id', ParseIntPipe) id: number) {
-        return this.dataService.findByPandemieId(id);
-    }
-
-    @ApiOperation({ summary: 'Lister les données associées à une localisation précise (id_location)' })
-    @Get('location/:id')
-    findLocation(@Param('id', ParseIntPipe) id: number) {
-        return this.dataService.findByLocationId(id);
-    }
-
     @ApiOperation({ summary: 'Mettre à jour une donnée existante' })
     @Patch(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() updateDataDto: UpdateDataDto) {
