@@ -5,7 +5,7 @@ import { UpdateCalendarDto } from './dto/update-calendar.dto';
 import { CalendarResponseDto } from './dto/response-calendar.dto';
 import { ApiOperation } from '@nestjs/swagger';
 
-@Controller('calendar')
+@Controller('calendars')
 export class CalendarController {
     constructor(private readonly calendarService: CalendarService) { }
 

@@ -1,39 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateDataDto } from './dto/create-data.dto';
-import { UpdateDataDto } from './dto/update-data.dto';
+import { CreatePredictionDto } from './dto/create-prediction.dto';
+import { UpdatePredictionDto } from './dto/update-prediction.dto';
 import { Prisma } from '@prisma/client';
-import { FilterDataDto } from './dto/filter-data.dto';
+import { FilterPredictionDto } from './dto/filter-prediction.dto';
 
 @Injectable()
-export class DataService {
+export class PredictionService {
     constructor(private readonly databaseService: DatabaseService) { }
 
-    async create(createDataDto: CreateDataDto) {
-        return this.databaseService.data.create({
-            data: createDataDto
+    async create(createPredictionDto: CreatePredictionDto) {
+        return this.databaseService.prediction.create({
+            data: createPredictionDto
         });
     }
 
     async findOne(id: number) {
-        return this.databaseService.data.findUnique({
+        return this.databaseService.prediction.findUnique({
             where: {
                 id,
             }
         });
     }
 
-    async update(id: number, updateDataDto: UpdateDataDto) {
-        return this.databaseService.data.update({
+    async update(id: number, updatePredictionDto: UpdatePredictionDto) {
+        return this.databaseService.prediction.update({
             where: {
                 id,
             },
-            data: updateDataDto
+            data: updatePredictionDto
         });
     }
 
     async remove(id: number) {
-        return this.databaseService.data.delete({
+        return this.databaseService.prediction.delete({
             where: {
                 id,
             }
@@ -41,7 +41,7 @@ export class DataService {
     }
 
     async findByCalendarId(id_calendar: number) {
-        return this.databaseService.data.findMany({
+        return this.databaseService.prediction.findMany({
             where: {
                 id_calendar,
             }
@@ -49,7 +49,7 @@ export class DataService {
     }
 
     async findByLocationId(id_location: number) {
-        return this.databaseService.data.findMany({
+        return this.databaseService.prediction.findMany({
             where: {
                 id_location,
             }
@@ -57,16 +57,16 @@ export class DataService {
     }
 
     async findByPandemieId(id_pandemie: number) {
-        return this.databaseService.data.findMany({
+        return this.databaseService.prediction.findMany({
             where: {
                 id_pandemie,
             }
         });
     }
 
-    async findByFilters(filters?: FilterDataDto) {
-        const query: Prisma.dataFindManyArgs = {
-            where: {},
+    async findByFilters(filters?: FilterPredictionDto) {
+        const query: Prisma.predictionFindManyArgs = {
+            where: {}
         };
 
         if (filters?.id_calendar) {
@@ -81,7 +81,7 @@ export class DataService {
             query.where!.id_pandemie = filters!.id_pandemie;
         }
 
-        return this.databaseService.data.findMany(query);
+        return this.databaseService.prediction.findMany(query);
     }
 
 }

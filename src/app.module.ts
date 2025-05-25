@@ -5,9 +5,10 @@ import { LocationModule } from './location/location.module';
 import { DataModule } from './data/data.module';
 import { DatabaseService } from './database/database.service';
 import { DatabaseModule } from './database/database.module';
+import { PredictionModule } from './prediction/prediction.module';
 
 @Module({
-  imports: [CalendarModule, PandemieModule, LocationModule, DataModule, DatabaseModule],
+  imports: [CalendarModule, PandemieModule, LocationModule, DataModule, DatabaseModule, PredictionModule],
   controllers: [],
   providers: [DatabaseService],
 })
