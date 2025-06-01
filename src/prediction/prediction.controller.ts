@@ -5,7 +5,7 @@ import { FilterPredictionDto } from './dto/filter-prediction.dto';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { UpdatePredictionDto } from './dto/update-prediction.dto';
 
-@Controller('predictions')
+@Controller('prediction')
 export class PredictionController {
     constructor(private readonly predictionService: PredictionService) { }
 
