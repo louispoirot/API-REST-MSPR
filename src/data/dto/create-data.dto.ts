@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsOptional, IsString, IsDateString } from 'class-validator';
 
 export class CreateDataDto {
-    @ApiProperty({ example: 1500, description: 'Nombre total de cas confirmé' })
+    @ApiProperty({ example: 1500, description: 'Nombre total de cas confirmés' })
     @IsInt()
     @IsNotEmpty()
     total_cases: number;
@@ -12,7 +12,7 @@ export class CreateDataDto {
     @IsNotEmpty()
     total_deaths: number;
 
-    @ApiProperty({ example: 50, description: 'Nombre de cas confirmé pendant cette date' })
+    @ApiProperty({ example: 50, description: 'Nombre de cas confirmés pendant cette date' })
     @IsInt()
     @IsNotEmpty()
     new_cases: number;
@@ -27,13 +27,13 @@ export class CreateDataDto {
     @IsPositive()
     id_location: number;
 
-    @ApiProperty({ example: 1, description: 'ID de la pandémie' })
-    @IsInt()
-    @IsPositive()
-    id_pandemie: number;
+    @ApiProperty({ example: '2020-03-15', description: 'Date de la donnée (format ISO)' })
+    @IsDateString()
+    @IsNotEmpty()
+    date_value: string;
 
-    @ApiProperty({ example: 1, description: 'ID du calendrier (date)' })
-    @IsInt()
-    @IsPositive()
-    id_calendar: number;
+    @ApiProperty({ example: 'Covid-19', description: 'Nom de la pandémie' })
+    @IsOptional()
+    @IsString()
+    pandemic?: string;
 }

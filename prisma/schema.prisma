@@ -7,29 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model calendar {
-  id         Int          @id @default(autoincrement())
-  date_value DateTime     @unique(map: "date_value") @db.Date
-  data       data[]
-  prediction prediction[]
-}
-
 model data {
-  id           Int      @id @default(autoincrement())
+  id           Int      @id @default(0)
   total_cases  Int
   total_deaths Int
   new_cases    Int
   new_deaths   Int
   id_location  Int
-  id_pandemie  Int
-  id_calendar  Int
-  calendar     calendar @relation(fields: [id_calendar], references: [id], map: "fk_data_calendar")
-  location     location @relation(fields: [id_location], references: [id], map: "fk_data_location")
-  pandemie     pandemie @relation(fields: [id_pandemie], references: [id], map: "fk_data_pandemie")
+  date_value   DateTime @db.Date
+  pandemic     String?  @db.VarChar(255)
+  location     location @relation(fields: [id_location], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_data_location")
 
-  @@index([id_calendar], map: "id_calendar")
   @@index([id_location], map: "id_location")
-  @@index([id_pandemie], map: "id_pandemie")
 }
 
 model location {
@@ -42,27 +31,16 @@ model location {
   prediction prediction[]
 }
 
-model pandemie {
-  id         Int          @id @default(autoincrement())
-  type       String?      @unique(map: "type") @db.VarChar(255)
-  data       data[]
-  prediction prediction[]
-}
-
 model prediction {
-  id           Int      @id @default(autoincrement())
+  id           Int      @id @default(0)
   total_cases  Int
   total_deaths Int
   new_cases    Int
   new_deaths   Int
   id_location  Int
-  id_pandemie  Int
-  id_calendar  Int
-  calendar     calendar @relation(fields: [id_calendar], references: [id], map: "fk_prediction_calendar")
-  location     location @relation(fields: [id_location], references: [id], map: "fk_prediction_location")
-  pandemie     pandemie @relation(fields: [id_pandemie], references: [id], map: "fk_prediction_pandemie")
+  date_value   DateTime @db.Date
+  pandemic     String?  @db.VarChar(255)
+  location     location @relation(fields: [id_location], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prediction_location")
 
-  @@index([id_calendar], map: "id_calendar")
   @@index([id_location], map: "id_location")
-  @@index([id_pandemie], map: "id_pandemie")
 }

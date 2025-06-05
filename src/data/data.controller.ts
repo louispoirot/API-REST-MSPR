@@ -1,45 +1,59 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+} from '@nestjs/common';
 import { CreateDataDto } from './dto/create-data.dto';
+import { UpdateDataDto } from './dto/update-data.dto';
 import { DataService } from './data.service';
 import { FilterDataDto } from './dto/filter-data.dto';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { UpdateDataDto } from './dto/update-data.dto';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ResponseDataDto } from './dto/response-data.dto';
 
+@ApiTags('data')
 @Controller('data')
 export class DataController {
     constructor(private readonly dataService: DataService) { }
 
     @ApiOperation({ summary: 'Créer une nouvelle entrée de données statistiques' })
     @Post()
-    Create(@Body() createDataDto: CreateDataDto) {
+    async create(@Body() createDataDto: CreateDataDto): Promise<ResponseDataDto> {
         return this.dataService.create(createDataDto);
     }
 
-    @ApiOperation({ summary: 'Lister toutes les données avec filtres optionnels (calendar, location, pandemie)' })
-    @ApiQuery({ name: 'id_calendar', required: false, type: Number })
+    @ApiOperation({ summary: 'Lister les données avec filtres optionnels' })
     @ApiQuery({ name: 'id_location', required: false, type: Number })
-    @ApiQuery({ name: 'id_pandemie', required: false, type: Number })
+    @ApiQuery({ name: 'pandemic', required: false, type: String })
+    @ApiQuery({ name: 'date_value', required: false, type: String, description: 'Date au format YYYY-MM-DD' })
     @Get()
-    findAll(@Query() filters?: FilterDataDto) {
+    async findAll(@Query() filters?: FilterDataDto): Promise<ResponseDataDto[]> {
         return this.dataService.findByFilters(filters);
     }
 
-    @ApiOperation({ summary: 'Récupérer une donnée spécifique par son ID' })
+    @ApiOperation({ summary: 'Récupérer une donnée par son ID' })
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
+    async findOne(@Param('id', ParseIntPipe) id: number): Promise<ResponseDataDto> {
         return this.dataService.findOne(id);
     }
 
     @ApiOperation({ summary: 'Mettre à jour une donnée existante' })
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id: number, @Body() updateDataDto: UpdateDataDto) {
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateDataDto: UpdateDataDto,
+    ): Promise<ResponseDataDto> {
         return this.dataService.update(id, updateDataDto);
     }
 
     @ApiOperation({ summary: 'Supprimer une donnée existante' })
     @Delete(':id')
-    remove(@Param('id', ParseIntPipe) id: number) {
+    async remove(@Param('id', ParseIntPipe) id: number): Promise<ResponseDataDto> {
         return this.dataService.remove(id);
     }
-
 }

@@ -2,62 +2,61 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
 import { UpdatePredictionDto } from './dto/update-prediction.dto';
+import { FilterDataDto } from '../data/dto/filter-data.dto';
+import { ResponsePredictionDto } from './dto/response-prediction.dto';
 import { Prisma } from '@prisma/client';
-import { FilterPredictionDto } from './dto/filter-prediction.dto';
 
 @Injectable()
 export class PredictionService {
     constructor(private readonly databaseService: DatabaseService) { }
 
-    async create(createPredictionDto: CreatePredictionDto) {
-        return this.databaseService.prediction.create({
-            data: createPredictionDto
+    async create(createPredictionDto: CreatePredictionDto): Promise<ResponsePredictionDto> {
+        const entity = await this.databaseService.prediction.create({
+            data: createPredictionDto,
         });
+        return new ResponsePredictionDto(entity);
     }
 
-    async findOne(id: number) {
-        return this.databaseService.prediction.findUnique({
-            where: {
-                id,
-            }
+    async findOne(id: number): Promise<ResponsePredictionDto> {
+        const entity = await this.databaseService.prediction.findUnique({
+            where: { id },
         });
+        return new ResponsePredictionDto(entity);
     }
 
-    async update(id: number, updatePredictionDto: UpdatePredictionDto) {
-        return this.databaseService.prediction.update({
-            where: {
-                id,
-            },
-            data: updatePredictionDto
+    async update(id: number, updateDto: UpdatePredictionDto): Promise<ResponsePredictionDto> {
+        const entity = await this.databaseService.prediction.update({
+            where: { id },
+            data: updateDto,
         });
+        return new ResponsePredictionDto(entity);
     }
 
-    async remove(id: number) {
-        return this.databaseService.prediction.delete({
-            where: {
-                id,
-            }
+    async remove(id: number): Promise<ResponsePredictionDto> {
+        const entity = await this.databaseService.prediction.delete({
+            where: { id },
         });
+        return new ResponsePredictionDto(entity);
     }
 
-    async findByFilters(filters?: FilterPredictionDto) {
+    async findByFilters(filters?: FilterDataDto): Promise<ResponsePredictionDto[]> {
         const query: Prisma.predictionFindManyArgs = {
-            where: {}
+            where: {},
         };
 
-        if (filters?.id_calendar) {
-            query.where!.id_calendar = filters!.id_calendar;
-        }
-
         if (filters?.id_location) {
-            query.where!.id_location = filters!.id_location;
+            query.where!.id_location = filters.id_location;
         }
 
-        if (filters?.id_pandemie) {
-            query.where!.id_pandemie = filters!.id_pandemie;
+        if (filters?.pandemic) {
+            query.where!.pandemic = filters.pandemic;
         }
 
-        return this.databaseService.prediction.findMany(query);
+        if (filters?.date_value) {
+            query.where!.date_value = new Date(filters.date_value);
+        }
+
+        const results = await this.databaseService.prediction.findMany(query);
+        return results.map((e) => new ResponsePredictionDto(e));
     }
-
 }

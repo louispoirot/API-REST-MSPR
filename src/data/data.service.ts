@@ -2,62 +2,61 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateDataDto } from './dto/create-data.dto';
 import { UpdateDataDto } from './dto/update-data.dto';
-import { Prisma } from '@prisma/client';
 import { FilterDataDto } from './dto/filter-data.dto';
+import { Prisma } from '@prisma/client';
+import { ResponseDataDto } from './dto/response-data.dto';
 
 @Injectable()
 export class DataService {
     constructor(private readonly databaseService: DatabaseService) { }
 
-    async create(createDataDto: CreateDataDto) {
-        return this.databaseService.data.create({
-            data: createDataDto
+    async create(createDataDto: CreateDataDto): Promise<ResponseDataDto> {
+        const entity = await this.databaseService.data.create({
+            data: createDataDto,
         });
+        return new ResponseDataDto(entity);
     }
 
-    async findOne(id: number) {
-        return this.databaseService.data.findUnique({
-            where: {
-                id,
-            }
+    async findOne(id: number): Promise<ResponseDataDto> {
+        const entity = await this.databaseService.data.findUnique({
+            where: { id },
         });
+        return new ResponseDataDto(entity);
     }
 
-    async update(id: number, updateDataDto: UpdateDataDto) {
-        return this.databaseService.data.update({
-            where: {
-                id,
-            },
-            data: updateDataDto
+    async update(id: number, updateDataDto: UpdateDataDto): Promise<ResponseDataDto> {
+        const entity = await this.databaseService.data.update({
+            where: { id },
+            data: updateDataDto,
         });
+        return new ResponseDataDto(entity);
     }
 
-    async remove(id: number) {
-        return this.databaseService.data.delete({
-            where: {
-                id,
-            }
+    async remove(id: number): Promise<ResponseDataDto> {
+        const entity = await this.databaseService.data.delete({
+            where: { id },
         });
+        return new ResponseDataDto(entity);
     }
 
-    async findByFilters(filters?: FilterDataDto) {
+    async findByFilters(filters?: FilterDataDto): Promise<ResponseDataDto[]> {
         const query: Prisma.dataFindManyArgs = {
             where: {},
         };
 
-        if (filters?.id_calendar) {
-            query.where!.id_calendar = filters!.id_calendar;
-        }
-
         if (filters?.id_location) {
-            query.where!.id_location = filters!.id_location;
+            query.where!.id_location = filters.id_location;
         }
 
-        if (filters?.id_pandemie) {
-            query.where!.id_pandemie = filters!.id_pandemie;
+        if (filters?.pandemic) {
+            query.where!.pandemic = filters.pandemic;
         }
 
-        return this.databaseService.data.findMany(query);
+        if (filters?.date_value) {
+            query.where!.date_value = new Date(filters.date_value);
+        }
+
+        const results = await this.databaseService.data.findMany(query);
+        return results.map((entity) => new ResponseDataDto(entity));
     }
-
 }
